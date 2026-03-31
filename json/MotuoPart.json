@@ -1,0 +1,482 @@
+[
+  {
+    "Id": 1,
+    "Type": 1,
+    "level": 1,
+    "GoldCost": 2000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 2,
+    "Type": 1,
+    "level": 2,
+    "GoldCost": 4000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 3,
+    "Type": 1,
+    "level": 3,
+    "GoldCost": 6000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 4,
+    "Type": 1,
+    "level": 4,
+    "GoldCost": 8000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 5,
+    "Type": 1,
+    "level": 5,
+    "GoldCost": 10000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 6,
+    "Type": 1,
+    "level": 6,
+    "GoldCost": 12000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 7,
+    "Type": 1,
+    "level": 7,
+    "GoldCost": 14000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 8,
+    "Type": 1,
+    "level": 8,
+    "GoldCost": 16000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 9,
+    "Type": 1,
+    "level": 9,
+    "GoldCost": 18000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 10,
+    "Type": 1,
+    "level": 10,
+    "GoldCost": 20000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 11,
+    "Type": 1,
+    "level": 11,
+    "GoldCost": 22000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 12,
+    "Type": 1,
+    "level": 12,
+    "GoldCost": 24000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 13,
+    "Type": 1,
+    "level": 13,
+    "GoldCost": 26000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 14,
+    "Type": 1,
+    "level": 14,
+    "GoldCost": 28000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 15,
+    "Type": 1,
+    "level": 15,
+    "GoldCost": 30000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 16,
+    "Type": 1,
+    "level": 16,
+    "GoldCost": 32000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 17,
+    "Type": 1,
+    "level": 17,
+    "GoldCost": 34000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 18,
+    "Type": 1,
+    "level": 18,
+    "GoldCost": 36000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 19,
+    "Type": 1,
+    "level": 19,
+    "GoldCost": 38000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 20,
+    "Type": 1,
+    "level": 20,
+    "GoldCost": 40000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 21,
+    "Type": 2,
+    "level": 1,
+    "GoldCost": 2000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 22,
+    "Type": 2,
+    "level": 2,
+    "GoldCost": 4000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 23,
+    "Type": 2,
+    "level": 3,
+    "GoldCost": 6000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 24,
+    "Type": 2,
+    "level": 4,
+    "GoldCost": 8000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 25,
+    "Type": 2,
+    "level": 5,
+    "GoldCost": 10000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 26,
+    "Type": 2,
+    "level": 6,
+    "GoldCost": 12000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 27,
+    "Type": 2,
+    "level": 7,
+    "GoldCost": 14000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 28,
+    "Type": 2,
+    "level": 8,
+    "GoldCost": 16000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 29,
+    "Type": 2,
+    "level": 9,
+    "GoldCost": 18000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 30,
+    "Type": 2,
+    "level": 10,
+    "GoldCost": 20000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 31,
+    "Type": 2,
+    "level": 11,
+    "GoldCost": 22000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 32,
+    "Type": 2,
+    "level": 12,
+    "GoldCost": 24000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 33,
+    "Type": 2,
+    "level": 13,
+    "GoldCost": 26000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 34,
+    "Type": 2,
+    "level": 14,
+    "GoldCost": 28000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 35,
+    "Type": 2,
+    "level": 15,
+    "GoldCost": 30000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 36,
+    "Type": 2,
+    "level": 16,
+    "GoldCost": 32000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 37,
+    "Type": 2,
+    "level": 17,
+    "GoldCost": 34000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 38,
+    "Type": 2,
+    "level": 18,
+    "GoldCost": 36000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 39,
+    "Type": 2,
+    "level": 19,
+    "GoldCost": 38000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 40,
+    "Type": 2,
+    "level": 20,
+    "GoldCost": 40000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 41,
+    "Type": 3,
+    "level": 1,
+    "GoldCost": 2000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 42,
+    "Type": 3,
+    "level": 2,
+    "GoldCost": 4000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 43,
+    "Type": 3,
+    "level": 3,
+    "GoldCost": 6000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 44,
+    "Type": 3,
+    "level": 4,
+    "GoldCost": 8000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 45,
+    "Type": 3,
+    "level": 5,
+    "GoldCost": 10000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 46,
+    "Type": 3,
+    "level": 6,
+    "GoldCost": 12000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 47,
+    "Type": 3,
+    "level": 7,
+    "GoldCost": 14000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 48,
+    "Type": 3,
+    "level": 8,
+    "GoldCost": 16000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 49,
+    "Type": 3,
+    "level": 9,
+    "GoldCost": 18000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 50,
+    "Type": 3,
+    "level": 10,
+    "GoldCost": 20000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 51,
+    "Type": 3,
+    "level": 11,
+    "GoldCost": 22000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 52,
+    "Type": 3,
+    "level": 12,
+    "GoldCost": 24000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 53,
+    "Type": 3,
+    "level": 13,
+    "GoldCost": 26000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 54,
+    "Type": 3,
+    "level": 14,
+    "GoldCost": 28000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 55,
+    "Type": 3,
+    "level": 15,
+    "GoldCost": 30000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 56,
+    "Type": 3,
+    "level": 16,
+    "GoldCost": 32000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 57,
+    "Type": 3,
+    "level": 17,
+    "GoldCost": 34000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 58,
+    "Type": 3,
+    "level": 18,
+    "GoldCost": 36000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 59,
+    "Type": 3,
+    "level": 19,
+    "GoldCost": 38000,
+    "OtherCost": "0",
+    "IsAd": null
+  },
+  {
+    "Id": 60,
+    "Type": 3,
+    "level": 20,
+    "GoldCost": 40000,
+    "OtherCost": "0",
+    "IsAd": null
+  }
+]

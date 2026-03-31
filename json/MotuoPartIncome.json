@@ -1,0 +1,122 @@
+[
+  {
+    "Id": 1,
+    "level": 1,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 2,
+    "level": 2,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 3,
+    "level": 3,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 4,
+    "level": 4,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 5,
+    "level": 5,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 6,
+    "level": 6,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 7,
+    "level": 7,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 8,
+    "level": 8,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 9,
+    "level": 9,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 10,
+    "level": 10,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 11,
+    "level": 11,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 12,
+    "level": 12,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 13,
+    "level": 13,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 14,
+    "level": 14,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 15,
+    "level": 15,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 16,
+    "level": 16,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 17,
+    "level": 17,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 18,
+    "level": 18,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 19,
+    "level": 19,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 20,
+    "level": 20,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 21,
+    "level": 21,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 22,
+    "level": 22,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 23,
+    "level": 23,
+    "GoldAdd": 10
+  },
+  {
+    "Id": 24,
+    "level": 24,
+    "GoldAdd": 10
+  }
+]

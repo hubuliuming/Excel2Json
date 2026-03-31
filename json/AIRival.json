@@ -1,0 +1,57 @@
+[
+  {
+    "Id": 1,
+    "AiLevel": 1,
+    "AiAdd": 0.85,
+    "CommandTime": 500,
+    "SensingDistance": 3.5,
+    "ChangeTime": 300,
+    "PlayerDistance": 3.5,
+    "SpeedTime": 1000,
+    "SpeedTimeCD": 6000
+  },
+  {
+    "Id": 2,
+    "AiLevel": 2,
+    "AiAdd": 0.95,
+    "CommandTime": 400,
+    "SensingDistance": 3.0,
+    "ChangeTime": 200,
+    "PlayerDistance": 3.0,
+    "SpeedTime": 1500,
+    "SpeedTimeCD": 5500
+  },
+  {
+    "Id": 3,
+    "AiLevel": 3,
+    "AiAdd": 1.05,
+    "CommandTime": 300,
+    "SensingDistance": 2.5,
+    "ChangeTime": 150,
+    "PlayerDistance": 2.5,
+    "SpeedTime": 2000,
+    "SpeedTimeCD": 5000
+  },
+  {
+    "Id": 4,
+    "AiLevel": 4,
+    "AiAdd": 1.1,
+    "CommandTime": 200,
+    "SensingDistance": 2.0,
+    "ChangeTime": 100,
+    "PlayerDistance": 2.0,
+    "SpeedTime": 2500,
+    "SpeedTimeCD": 4500
+  },
+  {
+    "Id": 5,
+    "AiLevel": 5,
+    "AiAdd": 1.3,
+    "CommandTime": 100,
+    "SensingDistance": 2.0,
+    "ChangeTime": 50,
+    "PlayerDistance": 2.0,
+    "SpeedTime": 3000,
+    "SpeedTimeCD": 3500
+  }
+]

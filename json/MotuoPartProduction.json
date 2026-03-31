@@ -1,0 +1,182 @@
+[
+  {
+    "Id": 1,
+    "level": 1,
+    "EnergyCost": 10,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 2,
+    "level": 2,
+    "EnergyCost": 11,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 3,
+    "level": 3,
+    "EnergyCost": 12,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 4,
+    "level": 4,
+    "EnergyCost": 13,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 5,
+    "level": 5,
+    "EnergyCost": 14,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 6,
+    "level": 6,
+    "EnergyCost": 15,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 7,
+    "level": 7,
+    "EnergyCost": 16,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 8,
+    "level": 8,
+    "EnergyCost": 17,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 9,
+    "level": 9,
+    "EnergyCost": 18,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 10,
+    "level": 10,
+    "EnergyCost": 19,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 11,
+    "level": 11,
+    "EnergyCost": 20,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 12,
+    "level": 12,
+    "EnergyCost": 21,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 13,
+    "level": 13,
+    "EnergyCost": 22,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 14,
+    "level": 14,
+    "EnergyCost": 23,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 15,
+    "level": 15,
+    "EnergyCost": 24,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 16,
+    "level": 16,
+    "EnergyCost": 25,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 17,
+    "level": 17,
+    "EnergyCost": 26,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 18,
+    "level": 18,
+    "EnergyCost": 27,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 19,
+    "level": 19,
+    "EnergyCost": 28,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 20,
+    "level": 20,
+    "EnergyCost": 29,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 21,
+    "level": 21,
+    "EnergyCost": 30,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 22,
+    "level": 22,
+    "EnergyCost": 31,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 23,
+    "level": 23,
+    "EnergyCost": 32,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 24,
+    "level": 24,
+    "EnergyCost": 33,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 25,
+    "level": 25,
+    "EnergyCost": 34,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 26,
+    "level": 26,
+    "EnergyCost": 35,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 27,
+    "level": 27,
+    "EnergyCost": 36,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 28,
+    "level": 28,
+    "EnergyCost": 37,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 29,
+    "level": 29,
+    "EnergyCost": 38,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  },
+  {
+    "Id": 30,
+    "level": 30,
+    "EnergyCost": 39,
+    "GetPieces": "1,40;2,20;3,20;4,20"
+  }
+]

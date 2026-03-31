@@ -1,0 +1,6 @@
+excel_folder=C:/dev/U3D/motoconf/游戏配置
+json_folder=C:/dev/U3D/motoconf/Tools/json
+cs_folder=C:/dev/U3D/motoconf/Tools/cs
+client_json_folder=C:\dev\U3D\client\JsonData
+namespace=Game.Config
+copy_to_client=1

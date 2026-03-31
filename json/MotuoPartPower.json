@@ -1,0 +1,146 @@
+[
+  {
+    "Id": 1,
+    "level": 1,
+    "EnergyNum": 30,
+    "EnergyRecover": 20
+  },
+  {
+    "Id": 2,
+    "level": 2,
+    "EnergyNum": 31,
+    "EnergyRecover": 21
+  },
+  {
+    "Id": 3,
+    "level": 3,
+    "EnergyNum": 32,
+    "EnergyRecover": 22
+  },
+  {
+    "Id": 4,
+    "level": 4,
+    "EnergyNum": 33,
+    "EnergyRecover": 23
+  },
+  {
+    "Id": 5,
+    "level": 5,
+    "EnergyNum": 34,
+    "EnergyRecover": 24
+  },
+  {
+    "Id": 6,
+    "level": 6,
+    "EnergyNum": 35,
+    "EnergyRecover": 25
+  },
+  {
+    "Id": 7,
+    "level": 7,
+    "EnergyNum": 36,
+    "EnergyRecover": 26
+  },
+  {
+    "Id": 8,
+    "level": 8,
+    "EnergyNum": 37,
+    "EnergyRecover": 27
+  },
+  {
+    "Id": 9,
+    "level": 9,
+    "EnergyNum": 38,
+    "EnergyRecover": 28
+  },
+  {
+    "Id": 10,
+    "level": 10,
+    "EnergyNum": 39,
+    "EnergyRecover": 29
+  },
+  {
+    "Id": 11,
+    "level": 11,
+    "EnergyNum": 40,
+    "EnergyRecover": 30
+  },
+  {
+    "Id": 12,
+    "level": 12,
+    "EnergyNum": 41,
+    "EnergyRecover": 31
+  },
+  {
+    "Id": 13,
+    "level": 13,
+    "EnergyNum": 42,
+    "EnergyRecover": 32
+  },
+  {
+    "Id": 14,
+    "level": 14,
+    "EnergyNum": 43,
+    "EnergyRecover": 33
+  },
+  {
+    "Id": 15,
+    "level": 15,
+    "EnergyNum": 44,
+    "EnergyRecover": 34
+  },
+  {
+    "Id": 16,
+    "level": 16,
+    "EnergyNum": 45,
+    "EnergyRecover": 35
+  },
+  {
+    "Id": 17,
+    "level": 17,
+    "EnergyNum": 46,
+    "EnergyRecover": 36
+  },
+  {
+    "Id": 18,
+    "level": 18,
+    "EnergyNum": 47,
+    "EnergyRecover": 37
+  },
+  {
+    "Id": 19,
+    "level": 19,
+    "EnergyNum": 48,
+    "EnergyRecover": 38
+  },
+  {
+    "Id": 20,
+    "level": 20,
+    "EnergyNum": 49,
+    "EnergyRecover": 39
+  },
+  {
+    "Id": 21,
+    "level": 21,
+    "EnergyNum": 50,
+    "EnergyRecover": 40
+  },
+  {
+    "Id": 22,
+    "level": 22,
+    "EnergyNum": 51,
+    "EnergyRecover": 41
+  },
+  {
+    "Id": 23,
+    "level": 23,
+    "EnergyNum": 52,
+    "EnergyRecover": 42
+  },
+  {
+    "Id": 24,
+    "level": 24,
+    "EnergyNum": 53,
+    "EnergyRecover": 43
+  }
+]
