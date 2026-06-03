@@ -1,35 +1,33 @@
-# Excel 导表工具（Python版）
+# Excel 导表工具（Python版，含 JSON 上传）
+
+## 项目简介
+
+本工具用于将 Excel 配置表导出为：
+
+- JSON 数据文件
+- C# 配置类文件
+
+并支持：
+
+- 按每个 Excel 的每个 Sheet 单独导出
+- 通过 `ClassName` 控制是否导出
+- GUI 启动器执行导表
+- bat 一键执行
+- 导出后自动上传 `json_folder` 下所有 `.json` 到服务器
+- client 输出目录不存在时自动跳过复制
 
 ---
 
-# 📌 项目简介
+## 环境依赖
 
-本工具用于将 Excel 配置表自动导出为：
-
-* JSON 数据文件
-* C# 配置类文件
-
-支持：
-
-* 按 Excel 中每个 Sheet 单独导出
-* 基于 `ClassName` 自动控制导出
-* GUI + bat 双入口
-* 中文路径支持（通过 Python 读取配置）
-* 自动复制 JSON 到客户端目录
-
----
-
-# 🧰 环境依赖（必须先安装）
-
-## 1️⃣ Python
-
-推荐版本：
+### Python
+推荐：
 
 ```text
 Python 3.8+
 ```
 
-检查是否安装：
+检查：
 
 ```bash
 python --version
@@ -41,39 +39,24 @@ python --version
 py -3 --version
 ```
 
----
-
-## 2️⃣ Python依赖库
-
+### Python 依赖
 安装：
 
 ```bash
 pip install openpyxl
 ```
 
----
-
-## 3️⃣ Windows 环境要求
-
-* 支持 `.bat` 执行
-* 支持 `.pyw` 运行（GUI）
-
-如果 `.pyw` 双击打不开：
-
-```bash
-python excel_export_launcher.pyw
-```
+> 上传功能使用 Python 标准库 `urllib`，不需要额外安装 `requests`。
 
 ---
 
-# 🧩 目录结构（推荐）
+## 推荐目录结构
 
 ```text
 motoconf/
-├─ 游戏配置/                 # Excel 配置目录
+├─ 游戏配置/
 │  ├─ xxx.xlsx
-│  ├─ yyy.xlsx
-│
+│  └─ yyy.xlsx
 ├─ Tools/
 │  ├─ excel_sheet_exporter.py
 │  ├─ excel_export_launcher.pyw
@@ -81,17 +64,15 @@ motoconf/
 │  ├─ run_export_from_config.bat
 │  ├─ json/
 │  └─ cs/
-│
-├─ client/
-│  └─ JsonData/
+└─ client/
+   └─ JsonData/
 ```
 
 ---
 
-# 📊 Excel 表规则（当前使用规则）
+## Excel 规则
 
-## ✅ 可导出 Sheet 条件
-
+### 可导出 Sheet 条件
 Sheet 第 1 行必须包含：
 
 ```text
@@ -100,19 +81,14 @@ ClassName
 
 否则该 Sheet 会被忽略。
 
----
+### 行结构
+| 行号 | 内容 |
+|---|---|
+| 第1行 | 字段名 |
+| 第2行 | 类型 |
+| 第3行+ | 数据 |
 
-## 🧱 行结构
-
-| 行号   | 内容                  |
-| ---- | ------------------- |
-| 第1行  | 字段名                 |
-| 第2行  | 类型（ClassName列用于输出名） |
-| 第3行+ | 数据                  |
-
----
-
-## 🧾 示例
+### 示例
 
 ```text
 id    name    desc    ClassName
@@ -121,14 +97,11 @@ int   string  string  LevelConfig
 2     关卡2   普通关
 ```
 
----
-
-# 📦 输出规则
-
-如果：
+### 输出规则
+如果 `ClassName` 列第 2 行值为：
 
 ```text
-ClassName列第2行 = LevelConfig
+LevelConfig
 ```
 
 则生成：
@@ -138,34 +111,81 @@ LevelConfig.json
 LevelConfig.cs
 ```
 
----
-
-# ⚠️ ClassName 列说明
-
-* 用于控制是否导出
-* 用于定义输出文件名
-* 不参与字段生成
+### ClassName 列说明
+- 用于判定是否导出
+- 用于决定输出文件名
+- 不参与 JSON / C# 字段导出
 
 ---
 
-# 🔢 支持的数据类型
+## 支持的数据类型
 
-* int
-* long
-* float
-* double
-* bool
-* string
-* json
-* 数组：`int[]` / `string[]`
-
----
-
-# 🚀 使用方式
+- int
+- long
+- float
+- double
+- bool
+- string
+- json
+- 数组类型：`int[]`、`string[]`
 
 ---
 
-## 🖥️ 方法1：GUI（推荐配置）
+## 默认 C# 命名空间
+
+默认命名空间为：
+
+```text
+GameConfig
+```
+
+---
+
+## 上传服务器规则
+
+当启用上传功能后，会遍历 `json_folder` 下所有 `.json` 文件，逐个上传到配置的服务器地址。
+
+### 上传内容结构
+
+每个 JSON 文件都会发送一个 HTTP POST 请求，请求体为 JSON：
+
+```json
+{
+  "key": "当前json文件名",
+  "desc": "测试",
+  "context": "当前json文件内容"
+}
+```
+
+### 字段说明
+
+- `key`: 当前 `.json` 文件名，例如 `LevelConfig.json`
+- `desc`: 固定值，默认 `测试`
+- `context`: 当前 `.json` 文件完整文本内容
+
+### 上传结果打印
+
+每个文件都会依次打印：
+
+- 成功：
+```text
+[UPLOAD OK] LevelConfig.json -> 200
+```
+
+- 失败：
+```text
+[UPLOAD FAIL] LevelConfig.json -> HTTP 500 | ...
+```
+
+最后汇总：
+
+```text
+[UPLOAD DONE] success=3, fail=1
+```
+
+---
+
+## GUI 使用方式
 
 ### 启动
 
@@ -181,48 +201,35 @@ excel_export_launcher.pyw
 python excel_export_launcher.pyw
 ```
 
----
+### GUI 配置项
+
+- Excel Folder
+- JSON Folder
+- C# Folder
+- Client JSON Folder
+- Namespace
+- Upload all JSON files in JSON Folder after export
+- Upload URL
+- Upload Desc
+- Upload Timeout
 
 ### 操作流程
 
 1. 配置路径
-2. 点击 `Run Export`
-3. 确认正常
-4. 点击 `Save Config`
+2. 如需上传，勾选上传开关并填写 Upload URL
+3. 点击 `Run Export`
+4. 确认正常
+5. 点击 `Save Config`
 
-生成：
-
-```text
-excel_export_launcher_config.txt
-```
-
----
-
-## ⚡ 方法2：bat 一键执行（推荐日常使用）
-
-双击：
-
-```text
-run_export_from_config.bat
-```
-
----
-
-## 🧠 原理
-
-* bat 不解析配置（避免中文乱码）
-* Python 读取 `excel_export_launcher_config.txt`
-* 调用导表脚本执行
-
----
-
-# ⚙️ 配置文件说明
-
-文件：
+配置会保存到：
 
 ```text
 excel_export_launcher_config.txt
 ```
+
+---
+
+## 配置文件说明
 
 示例：
 
@@ -231,137 +238,111 @@ excel_folder=C:/dev/U3D/motoconf/游戏配置
 json_folder=C:/dev/U3D/motoconf/Tools/json
 cs_folder=C:/dev/U3D/motoconf/Tools/cs
 client_json_folder=C:/dev/U3D/client/JsonData
-namespace=Game.Config
+namespace=GameConfig
 copy_to_client=1
+enable_upload=1
+upload_url=http://127.0.0.1:8080/upload
+upload_desc=测试
+upload_timeout=15
 ```
+
+### 字段说明
+
+- `excel_folder`: Excel 目录
+- `json_folder`: JSON 输出目录
+- `cs_folder`: C# 输出目录
+- `client_json_folder`: 客户端 JSON 目录
+- `namespace`: C# 命名空间
+- `copy_to_client`: 是否复制 JSON 到客户端目录，`1` 开启
+- `enable_upload`: 是否启用上传，`1` 开启
+- `upload_url`: 上传接口地址
+- `upload_desc`: 上传 payload 的 `desc`
+- `upload_timeout`: 上传超时时间，单位秒
 
 ---
 
-# 📁 输出结果
+## bat 一键执行
 
-## JSON
+双击：
 
+```text
+run_export_from_config.bat
+```
+
+bat 不直接解析中文配置，而是调用 Python 用 UTF-8 读取配置文件后执行导表和上传。
+
+---
+
+## 输出结果
+
+### JSON 输出目录
 ```text
 Tools/json/*.json
 ```
 
-## C#
-
+### C# 输出目录
 ```text
 Tools/cs/*.cs
 ```
 
-## Client 同步（如果存在）
+### Client 同步
+如果 `client_json_folder` 存在，则自动复制 JSON。
+
+---
+
+## 常见问题
+
+### 导出完成但没有文件
+日志出现：
 
 ```text
-client/JsonData/
+[DONE] Exported 0 sheet(s).
 ```
 
----
+说明没有符合规则的 Sheet。检查：
 
-# ❗ 常见问题
+- 第 1 行是否存在 `ClassName`
+- `ClassName` 拼写是否正确
+- `ClassName` 列第 2 行是否写了输出名
 
----
+### 上传没有执行
+检查：
 
-## ❌ 导出0个Sheet
+- GUI 里是否勾选了上传开关
+- `upload_url` 是否填写
+- bat 读取的配置文件里 `enable_upload=1`
 
-```text
-[DONE] Exported 0 sheet(s)
-```
+### client 目录不存在
+不是错误，会自动跳过复制。
 
-原因：
-
-* 没有 `ClassName`
-* 拼写错误
-* 没有填写输出名
-
----
-
-## ❌ 类型错误
-
-```text
-unsupported type 'xxx'
-```
-
-原因：
-
-* 类型写错
-* 行顺序不符合规则
+### 中文路径乱码
+当前方案已规避：配置文件由 Python 读取，不由 bat 直接解析。
 
 ---
 
-## ❌ 中文路径乱码
+## 推荐工作流
 
-原因：
-
-* bat 解析中文路径失败
-
-解决：
-
-✅ 使用配置文件 + Python读取（已解决）
-
----
-
-## ❌ client目录不存在
-
-不是错误：
-
-* 会自动跳过复制
-* 不影响导表
-
----
-
-# 🔄 工作流
-
-## 初次配置
-
+### 初次配置
 1. 打开 GUI
-2. 配路径
-3. Run Export
-4. Save Config
+2. 配置导表路径
+3. 配置上传地址
+4. Run Export
+5. Save Config
 
----
-
-## 日常使用
+### 日常使用
+直接双击：
 
 ```text
-双击 run_export_from_config.bat
+run_export_from_config.bat
 ```
 
 ---
 
-# 🧠 推荐实践
+## 后续建议
 
-* GUI 负责配置
-* bat 负责执行
-* 配置统一由 txt 管理
+下一步建议补充：
 
----
-
-# 🚀 后续可扩展
-
-建议增加：
-
-* 重名检测（防覆盖）
-* 主键唯一性校验
-* 外键校验
-* Unity一键导表入口
-
----
-
-# 🎯 总结
-
-当前工具链已经具备：
-
-* 自动导表
-* 配置驱动
-* GUI + bat 双入口
-* 中文路径支持
-* Unity接入基础能力
-
-推荐使用方式：
-
-👉 平时直接双击 bat 导表
-👉 需要改路径时用 GUI 配置
-
----
+- 输出重名检测
+- 主键重复校验
+- 外键引用校验
+- Unity 菜单一键导表
