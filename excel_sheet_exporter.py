@@ -9,9 +9,11 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
+from urllib import error, request
 
 try:
     from openpyxl import load_workbook
+    from openpyxl.utils import get_column_letter
 except ImportError as exc:  # pragma: no cover
     print("Missing dependency: openpyxl. Install with: pip install openpyxl", file=sys.stderr)
     raise
@@ -55,11 +57,54 @@ class ExportError(Exception):
     pass
 
 
+class CellExportError(ExportError):
+    def __init__(self, reason: str, *, excel: str | None = None, sheet: str | None = None,
+                 row: int | None = None, col: int | None = None, field: str | None = None,
+                 raw_type: str | None = None, value: Any = None) -> None:
+        super().__init__(reason)
+        self.reason = reason
+        self.excel = excel
+        self.sheet = sheet
+        self.row = row
+        self.col = col
+        self.field = field
+        self.raw_type = raw_type
+        self.value = value
+
+    @property
+    def cell(self) -> str:
+        if self.row is None or self.col is None:
+            return ""
+        return f"{get_column_letter(self.col)}{self.row}"
+
+    def with_context(self, *, excel: str | None = None, sheet: str | None = None) -> "CellExportError":
+        if excel and not self.excel:
+            self.excel = excel
+        if sheet and not self.sheet:
+            self.sheet = sheet
+        return self
+
+    def format(self) -> str:
+        lines = ["--------------------------------------------------", "[EXPORT ERROR]"]
+        if self.excel:
+            lines.append(f"Excel : {self.excel}")
+        if self.sheet:
+            lines.append(f"Sheet : {self.sheet}")
+        if self.cell:
+            lines.append(f"Cell  : {self.cell}")
+        if self.field:
+            lines.append(f"Field : {self.field}")
+        if self.raw_type:
+            lines.append(f"Type  : {self.raw_type}")
+        if self.value is not None:
+            lines.append(f"Value : {self.value}")
+        lines.extend(["Reason:", self.reason, "--------------------------------------------------"])
+        return "\n".join(lines)
+
 
 def sanitize_filename(name: str) -> str:
     value = INVALID_FILE_CHARS.sub("_", str(name or "")).strip().rstrip(".")
     return value or "Unnamed"
-
 
 
 def sanitize_identifier(name: str, pascal: bool = False) -> str:
@@ -81,17 +126,14 @@ def sanitize_identifier(name: str, pascal: bool = False) -> str:
     return text
 
 
-
 def is_blank(value: Any) -> bool:
     return value is None or (isinstance(value, str) and value.strip() == "")
-
 
 
 def normalize_cell_text(value: Any) -> str:
     if value is None:
         return ""
     return str(value).strip()
-
 
 
 def parse_bool(value: Any) -> bool:
@@ -105,7 +147,6 @@ def parse_bool(value: Any) -> bool:
     if text in {"0", "false", "no", "n", "off", ""}:
         return False
     raise ValueError(f"Cannot parse bool from '{value}'")
-
 
 
 def convert_scalar(value: Any, raw_type: str) -> Any:
@@ -129,10 +170,8 @@ def convert_scalar(value: Any, raw_type: str) -> Any:
     return value
 
 
-
 def split_array_text(text: str, delimiter: str) -> list[str]:
     return [item.strip() for item in text.split(delimiter)] if text else []
-
 
 
 def convert_value(value: Any, raw_type: str, array_delimiter: str) -> Any:
@@ -149,7 +188,6 @@ def convert_value(value: Any, raw_type: str, array_delimiter: str) -> Any:
             items = [value]
         return [convert_scalar(item, element_type) for item in items if not is_blank(item)]
     return convert_scalar(value, raw_type)
-
 
 
 def infer_type(values: list[Any]) -> str:
@@ -190,19 +228,18 @@ def infer_type(values: list[Any]) -> str:
     return "string"
 
 
-
 def find_class_name_column(ws, header_row: int, type_row: int) -> tuple[int | None, str | None]:
     header_values = [normalize_cell_text(cell.value) for cell in ws[header_row]]
     for idx, value in enumerate(header_values):
         if CLASS_NAME_KEYWORD in value.lower():
             output_name = normalize_cell_text(ws.cell(row=type_row, column=idx + 1).value)
             if not output_name:
-                raise ExportError(
-                    f"Sheet '{ws.title}' has a '{value}' marker in row {type_row}, but row {type_row + 1} is empty in that column."
+                raise CellExportError(
+                    "ClassName column exists, but its output name cell is empty.",
+                    sheet=ws.title, row=type_row, col=idx + 1, field=value, value=output_name,
                 )
             return idx, output_name
     return None, None
-
 
 
 def build_columns(ws, type_row: int, header_row: int, data_start_row: int, sample_rows: int) -> tuple[list[ColumnDef], str] | None:
@@ -212,7 +249,7 @@ def build_columns(ws, type_row: int, header_row: int, data_start_row: int, sampl
 
     headers = [normalize_cell_text(cell.value) for cell in ws[header_row]]
     if not any(headers):
-        raise ExportError(f"Sheet '{ws.title}' header row {header_row} is empty")
+        raise CellExportError(f"Header row {header_row} is empty.", sheet=ws.title, row=header_row)
 
     type_values = [normalize_cell_text(cell.value).lower() for cell in ws[type_row]]
     value_samples_by_col: list[list[Any]] = [[] for _ in headers]
@@ -243,10 +280,17 @@ def build_columns(ws, type_row: int, header_row: int, data_start_row: int, sampl
         if CLASS_NAME_KEYWORD in raw_type:
             continue
         if raw_type and raw_type not in SUPPORTED_TYPES and not raw_type.endswith("[]"):
-            raise ExportError(
-                f"Sheet '{ws.title}' column '{header}' has unsupported type '{raw_type}'. "
-                "Supported: int, long, float, double, bool, string, json, and [] arrays."
+            raise CellExportError(
+                "Unsupported type. Supported: int, long, float, double, bool, string, json, and [] arrays.",
+                sheet=ws.title, row=type_row, col=idx + 1, field=header, raw_type=raw_type, value=raw_type,
             )
+        if raw_type.endswith("[]"):
+            element_type = raw_type[:-2]
+            if element_type not in SUPPORTED_TYPES:
+                raise CellExportError(
+                    "Unsupported array element type. Supported array examples: int[], long[], float[], double[], bool[], string[], json[].",
+                    sheet=ws.title, row=type_row, col=idx + 1, field=header, raw_type=raw_type, value=raw_type,
+                )
         if not raw_type:
             raw_type = infer_type(value_samples_by_col[idx])
         base_cs_type = SUPPORTED_TYPES.get(raw_type[:-2], raw_type[:-2]) if raw_type.endswith("[]") else SUPPORTED_TYPES.get(raw_type, raw_type)
@@ -254,29 +298,37 @@ def build_columns(ws, type_row: int, header_row: int, data_start_row: int, sampl
         columns.append(ColumnDef(header, field_name, cs_type, raw_type, idx))
 
     if not columns:
-        raise ExportError(f"Sheet '{ws.title}' has no valid export columns")
+        raise CellExportError("Sheet has ClassName marker, but no valid export columns were found.", sheet=ws.title, row=header_row)
     return columns, export_name
-
 
 
 def row_is_effectively_empty(row_values: list[Any], columns: list[ColumnDef]) -> bool:
     return all(is_blank(row_values[col.index] if col.index < len(row_values) else None) for col in columns)
 
 
-
 def parse_sheet_rows(ws, columns: list[ColumnDef], data_start_row: int, array_delimiter: str) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    for row in ws.iter_rows(min_row=data_start_row, values_only=True):
+    for excel_row_idx, row in enumerate(ws.iter_rows(min_row=data_start_row, values_only=True), start=data_start_row):
         values = list(row)
         if row_is_effectively_empty(values, columns):
             continue
         item: dict[str, Any] = {}
         for col in columns:
             value = values[col.index] if col.index < len(values) else None
-            item[col.field_name] = convert_value(value, col.raw_type, array_delimiter)
+            try:
+                item[col.field_name] = convert_value(value, col.raw_type, array_delimiter)
+            except Exception as exc:
+                raise CellExportError(
+                    f"Cannot convert value to expected type: {exc}",
+                    sheet=ws.title,
+                    row=excel_row_idx,
+                    col=col.index + 1,
+                    field=col.source_name,
+                    raw_type=col.raw_type,
+                    value=value,
+                ) from exc
         rows.append(item)
     return rows
-
 
 
 def generate_cs_source(namespace: str, class_name: str, columns: list[ColumnDef]) -> str:
@@ -300,7 +352,6 @@ def generate_cs_source(namespace: str, class_name: str, columns: list[ColumnDef]
     )
 
 
-
 def export_workbook(
     excel_path: Path,
     json_folder: Path,
@@ -312,10 +363,11 @@ def export_workbook(
     array_delimiter: str,
     sample_rows: int,
     include_hidden_sheets: bool,
-) -> list[SheetExportResult]:
+) -> tuple[list[SheetExportResult], list[CellExportError]]:
     wb = load_workbook(excel_path, data_only=True)
     results: list[SheetExportResult] = []
-    workbook_name = excel_path.stem
+    errors: list[CellExportError] = []
+    workbook_name = excel_path.name
     try:
         for ws in wb.worksheets:
             if not include_hidden_sheets and ws.sheet_state != "visible":
@@ -323,28 +375,32 @@ def export_workbook(
             if ws.title.startswith("#"):
                 continue
 
-            built = build_columns(ws, type_row, header_row, data_start_row, sample_rows)
-            if built is None:
-                continue
-            columns, export_name_raw = built
-            export_name = sanitize_filename(export_name_raw)
+            try:
+                built = build_columns(ws, type_row, header_row, data_start_row, sample_rows)
+                if built is None:
+                    continue
+                columns, export_name_raw = built
+                export_name = sanitize_filename(export_name_raw)
 
-            rows = parse_sheet_rows(ws, columns, data_start_row, array_delimiter)
-            json_path = json_folder / f"{export_name}.json"
-            json_path.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
+                rows = parse_sheet_rows(ws, columns, data_start_row, array_delimiter)
+                json_path = json_folder / f"{export_name}.json"
+                json_path.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
 
-            cs_path: Path | None = None
-            if cs_folder is not None:
-                class_name = sanitize_identifier(export_name_raw, pascal=True)
-                cs_source = generate_cs_source(namespace, class_name, columns)
-                cs_path = cs_folder / f"{export_name}.cs"
-                cs_path.write_text(cs_source, encoding="utf-8")
+                cs_path: Path | None = None
+                if cs_folder is not None:
+                    class_name = sanitize_identifier(export_name_raw, pascal=True)
+                    cs_source = generate_cs_source(namespace, class_name, columns)
+                    cs_path = cs_folder / f"{export_name}.cs"
+                    cs_path.write_text(cs_source, encoding="utf-8")
 
-            results.append(SheetExportResult(workbook_name, ws.title, export_name, json_path, cs_path, len(rows)))
+                results.append(SheetExportResult(excel_path.stem, ws.title, export_name, json_path, cs_path, len(rows)))
+            except CellExportError as exc:
+                errors.append(exc.with_context(excel=workbook_name, sheet=ws.title))
+            except Exception as exc:
+                errors.append(CellExportError(str(exc), excel=workbook_name, sheet=ws.title))
     finally:
         wb.close()
-    return results
-
+    return results, errors
 
 
 def copy_json_outputs(source_folder: Path, target_folder: Path) -> None:
@@ -353,6 +409,46 @@ def copy_json_outputs(source_folder: Path, target_folder: Path) -> None:
         dst = target_folder / src.name
         dst.write_bytes(src.read_bytes())
 
+
+def upload_json_outputs(json_folder: Path, upload_url: str, upload_desc: str, timeout: float) -> tuple[int, int]:
+    success_count = 0
+    fail_count = 0
+    json_files = sorted(json_folder.glob("*.json"), key=lambda p: p.name.lower())
+
+    for json_file in json_files:
+        key = json_file.stem
+        file_content = json_file.read_text(encoding="utf-8")
+        payload = {
+            "key": key,
+            "desc": upload_desc,
+            "content": file_content,
+        }
+        body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        req = request.Request(
+            upload_url,
+            data=body,
+            headers={"Content-Type": "application/json; charset=utf-8"},
+            method="POST",
+        )
+        try:
+            with request.urlopen(req, timeout=timeout) as resp:
+                status = getattr(resp, "status", resp.getcode())
+                resp_text = resp.read().decode("utf-8", errors="ignore")
+                if 200 <= status < 300:
+                    print(f"[UPLOAD OK] {json_file.name} -> HTTP {status} | {resp_text}")
+                    success_count += 1
+                else:
+                    print(f"[UPLOAD FAIL] {json_file.name} -> HTTP {status} | {resp_text}")
+                    fail_count += 1
+        except error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="ignore")
+            print(f"[UPLOAD FAIL] {json_file.name} -> HTTP {exc.code} | {detail}")
+            fail_count += 1
+        except Exception as exc:
+            print(f"[UPLOAD FAIL] {json_file.name} -> {exc}")
+            fail_count += 1
+
+    return success_count, fail_count
 
 
 def parse_args() -> argparse.Namespace:
@@ -365,12 +461,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--type-row", type=int, default=1, help="Type row index (1-based). Supports legacy layout. Default: 1")
     parser.add_argument("--header-row", type=int, default=2, help="Field-name row index (1-based). Supports legacy layout. Default: 2")
     parser.add_argument("--data-start-row", type=int, default=3, help="First data row (1-based). Default: 3")
-    parser.add_argument("--namespace", default="Game.Config", help="C# namespace")
+    parser.add_argument("--namespace", default="GameConfig", help="C# namespace")
     parser.add_argument("--array-delimiter", default="|", help="Delimiter for [] array columns. Default: |")
     parser.add_argument("--sample-rows", type=int, default=30, help="Rows used for type inference when type row is empty")
     parser.add_argument("--include-hidden-sheets", action="store_true", help="Also export hidden sheets")
+    parser.add_argument("--upload-url", help="Optional server URL for uploading all JSON files in json-folder after export")
+    parser.add_argument("--upload-desc", default="测试", help="Upload payload desc field. Default: 测试")
+    parser.add_argument("--upload-timeout", type=float, default=30.0, help="Upload request timeout in seconds. Default: 30")
+    parser.add_argument("--fail-on-sheet-error", action="store_true", help="Return non-zero exit code when any sheet export error occurs")
     return parser.parse_args()
-
 
 
 def validate_args(args: argparse.Namespace) -> None:
@@ -380,7 +479,8 @@ def validate_args(args: argparse.Namespace) -> None:
         raise ExportError("--header-row and --type-row cannot be the same")
     if args.data_start_row <= max(args.header_row, args.type_row):
         raise ExportError("--data-start-row must be greater than both --header-row and --type-row")
-
+    if args.upload_timeout <= 0:
+        raise ExportError("--upload-timeout must be > 0")
 
 
 def main() -> int:
@@ -404,8 +504,10 @@ def main() -> int:
             raise ExportError(f"No .xlsx files found under: {excel_folder}")
 
         all_results: list[SheetExportResult] = []
+        all_errors: list[CellExportError] = []
+
         for excel_path in excel_files:
-            workbook_results = export_workbook(
+            workbook_results, workbook_errors = export_workbook(
                 excel_path=excel_path,
                 json_folder=json_folder,
                 cs_folder=cs_folder,
@@ -418,17 +520,39 @@ def main() -> int:
                 include_hidden_sheets=args.include_hidden_sheets,
             )
             all_results.extend(workbook_results)
+            all_errors.extend(workbook_errors)
+
             for item in workbook_results:
                 msg = f"[OK] {item.workbook_name} / {item.sheet_name} -> {item.json_path.name}"
                 if item.cs_path:
                     msg += f" , {item.cs_path.name}"
                 print(msg)
 
+            for item_error in workbook_errors:
+                print(item_error.format(), file=sys.stderr)
+
+        print("========================================")
+        print("[EXPORT SUMMARY]")
+        print(f"Success Sheet : {len(all_results)}")
+        print(f"Failed Sheet  : {len(all_errors)}")
+        print("========================================")
+
         if copy_json_to is not None:
             copy_json_outputs(json_folder, copy_json_to)
             print(f"[COPY] JSON copied to: {copy_json_to}")
 
+        if args.upload_url:
+            upload_success, upload_fail = upload_json_outputs(
+                json_folder=json_folder,
+                upload_url=args.upload_url,
+                upload_desc=args.upload_desc,
+                timeout=args.upload_timeout,
+            )
+            print(f"[UPLOAD DONE] success={upload_success}, fail={upload_fail}")
+
         print(f"[DONE] Exported {len(all_results)} sheet(s).")
+        if all_errors and args.fail_on_sheet_error:
+            return 3
         return 0
     except ExportError as exc:
         print(f"[ERROR] {exc}", file=sys.stderr)
@@ -436,7 +560,6 @@ def main() -> int:
     except Exception as exc:  # pragma: no cover
         print(f"[ERROR] Unexpected failure: {exc}", file=sys.stderr)
         return 1
-
 
 if __name__ == "__main__":
     raise SystemExit(main())
