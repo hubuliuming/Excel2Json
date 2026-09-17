@@ -364,10 +364,26 @@ def export_workbook(
     sample_rows: int,
     include_hidden_sheets: bool,
 ) -> tuple[list[SheetExportResult], list[CellExportError]]:
+    """Export one workbook into one merged JSON file.
+
+    Rules:
+    - Only sheets containing a ClassName marker participate in export.
+    - The JSON file name is taken from the ClassName value of the first
+      participating sheet in workbook order.
+    - Each participating sheet is stored as one property whose key is that
+      sheet's ClassName value and whose value is that sheet's row array.
+    - C# generation keeps the previous per-sheet behavior.
+    """
     wb = load_workbook(excel_path, data_only=True)
     results: list[SheetExportResult] = []
     errors: list[CellExportError] = []
     workbook_name = excel_path.name
+
+    merged_json: dict[str, list[dict[str, Any]]] = {}
+    first_export_name_raw: str | None = None
+    first_export_name: str | None = None
+    pending_results: list[tuple[str, str, Path | None, int]] = []
+
     try:
         for ws in wb.worksheets:
             if not include_hidden_sheets and ws.sheet_state != "visible":
@@ -379,27 +395,60 @@ def export_workbook(
                 built = build_columns(ws, type_row, header_row, data_start_row, sample_rows)
                 if built is None:
                     continue
+
                 columns, export_name_raw = built
-                export_name = sanitize_filename(export_name_raw)
-
                 rows = parse_sheet_rows(ws, columns, data_start_row, array_delimiter)
-                json_path = json_folder / f"{export_name}.json"
-                json_path.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
 
+                if first_export_name_raw is None:
+                    first_export_name_raw = export_name_raw
+                    first_export_name = sanitize_filename(export_name_raw)
+
+                # Merge every ClassName-marked sheet into one JSON object.
+                # Each sheet's own ClassName value is used as the JSON property key.
+                if export_name_raw in merged_json:
+                    raise CellExportError(
+                        f"Duplicate ClassName '{export_name_raw}' in workbook. Each exported sheet must use a unique ClassName.",
+                        sheet=ws.title,
+                    )
+                merged_json[export_name_raw] = rows
+
+                # Keep the existing C# behavior: one class per participating sheet,
+                # using that sheet's own ClassName value.
                 cs_path: Path | None = None
                 if cs_folder is not None:
+                    sheet_export_name = sanitize_filename(export_name_raw)
                     class_name = sanitize_identifier(export_name_raw, pascal=True)
                     cs_source = generate_cs_source(namespace, class_name, columns)
-                    cs_path = cs_folder / f"{export_name}.cs"
+                    cs_path = cs_folder / f"{sheet_export_name}.cs"
                     cs_path.write_text(cs_source, encoding="utf-8")
 
-                results.append(SheetExportResult(excel_path.stem, ws.title, export_name, json_path, cs_path, len(rows)))
+                pending_results.append((ws.title, export_name_raw, cs_path, len(rows)))
             except CellExportError as exc:
                 errors.append(exc.with_context(excel=workbook_name, sheet=ws.title))
             except Exception as exc:
                 errors.append(CellExportError(str(exc), excel=workbook_name, sheet=ws.title))
+
+        if first_export_name is not None:
+            json_path = json_folder / f"{first_export_name}.json"
+            json_path.write_text(
+                json.dumps(merged_json, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+
+            for sheet_name, export_name_raw, cs_path, row_count in pending_results:
+                results.append(
+                    SheetExportResult(
+                        excel_path.stem,
+                        sheet_name,
+                        first_export_name,
+                        json_path,
+                        cs_path,
+                        row_count,
+                    )
+                )
     finally:
         wb.close()
+
     return results, errors
 
 
